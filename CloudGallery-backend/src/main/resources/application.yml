@@ -1,0 +1,25 @@
+server:
+  port: 8123
+  servlet:
+    context-path: /api
+spring:
+  application:
+    name: yu-picture-backend
+  # 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/yu_picture
+    username: root
+    password: root
+# 接口文档配置
+knife4j:
+  enable: true
+  openapi:
+    title: "接口文档"
+    version: 1.0
+    group:
+      default:
+        api-rule: package
+        api-rule-resources:
+           com.project.cloudgallerybackend.contoller
+
