@@ -195,6 +195,7 @@ const pagination = computed(() => {
 const fetchData = async () => {
   const res = await listPictureByPageUsingPost({
     ...searchParams,
+    nullSpaceId: true,
   })
   if (res.data.data) {
     dataList.value = res.data.data.records ?? []
@@ -203,6 +204,7 @@ const fetchData = async () => {
     message.error('获取数据失败，' + res.data.message)
   }
 }
+
 
 // 获取数据
 const doSearch = () => {

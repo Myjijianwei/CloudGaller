@@ -69,22 +69,16 @@ const items = ref<MenuProps['items']>([
   },
 
   {
-    key: '/about',
-    label: '关于',
-    title: '关于',
-  },
-  {
     key: '/admin/pictureManage',
     label: '图片管理',
     title: '图片管理',
-  }
+  },
+  {
+    key: '/admin/spaceManage',
+    label: '空间管理',
+    title: '空间管理',
+  },
 
-
-  // {
-  //   key: 'others',
-  //   label: h('a', { href: 'https://www.codefather.cn', target: '_blank' }, '编程导航'),
-  //   title: '编程导航',
-  // },
 ])
 
 const router = useRouter()

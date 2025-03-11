@@ -24,8 +24,10 @@ import { testUploadFileUsingPost, uploadPictureUsingPost } from '@/api/fileContr
 
 interface Props {
   picture?: API.PictureVO
+  spaceId?: number
   onSuccess?: (newPicture: API.PictureVO) => void
 }
+
 
 const props = defineProps<Props>()
 
@@ -52,6 +54,7 @@ const handleUpload = async ({ file }: any) => {
   }
   loading.value = false
 }
+
 
 const loading = ref<boolean>(false)
 
