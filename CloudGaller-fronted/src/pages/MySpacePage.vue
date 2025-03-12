@@ -33,12 +33,9 @@ const checkUserSpace = async () => {
   if (res.data.code === 0) {
     // 如果有，则进入第一个空间
     if (res.data.data?.records?.length > 0) {
-      console.log(res.data.data)
       const space = res.data.data.records[0]
       router.replace(`/space/${space.id}`)
     } else {
-      console.log(res.data.data)
-
       // 如果没有，则跳转到创建空间页面
       router.replace('/add_space')
       message.warn('请先创建空间')

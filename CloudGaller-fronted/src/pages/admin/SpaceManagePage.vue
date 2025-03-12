@@ -164,17 +164,25 @@ const doSearch = () => {
 
 // 删除数据
 const doDelete = async (id: string) => {
+  console.log("delete", id);
   if (!id) {
-    return
+    return;
   }
-  const res = await deleteSpaceUsingPost({ id })
-  if (res.data.code === 0) {
-    message.success('删除成功')
-    // 刷新数据
-    fetchData()
+  // 使用 window.confirm 创建确认弹窗
+  const isConfirmed = window.confirm('确认删除个人空间吗？这将会清除空间内的所有图片');
+  if (isConfirmed) {
+    const res = await deleteSpaceUsingPost({ id });
+    if (res.data.code === 0) {
+      message.success('删除成功');
+      // 刷新数据
+      fetchData();
+    } else {
+      message.error('删除失败');
+    }
   } else {
-    message.error('删除失败')
+    // 用户点击取消，不进行删除操作
+    message.info('已取消删除操作');
   }
-}
+};
 </script>
 

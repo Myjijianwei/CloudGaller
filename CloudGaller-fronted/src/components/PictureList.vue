@@ -96,7 +96,7 @@ const doDelete = async (picture, e) => {
     return
   }
   const res = await deletePictureUsingPost({ id })
-  if (res.data.code === 0) {
+  if (res.data) {
     message.success('删除成功')
     props.onReload?.()
   } else {
