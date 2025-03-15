@@ -27,6 +27,15 @@
       <a-form-item>
         <a-button type="primary" html-type="submit">搜索</a-button>
       </a-form-item>
+      <a-space>
+        <a-button type="primary" href="/add_space" target="_blank">+ 创建空间</a-button>
+        <a-button type="primary" ghost href="/space_analyze?queryPublic=1" target="_blank">
+          分析公共图库
+        </a-button>
+        <a-button type="primary" ghost href="/space_analyze?queryAll=1" target="_blank">
+          分析全空间
+        </a-button>
+      </a-space>
     </a-form>
     <div style="margin-bottom: 16px" />
     <!-- 表格 -->
@@ -52,6 +61,9 @@
         </template>
         <template v-else-if="column.key === 'action'">
           <a-space wrap>
+            <a-button type="link" :href="`/space_analyze?spaceId=${record.id}`" target="_blank">
+              分析
+            </a-button>
             <a-button type="link" :href="`/add_space?id=${record.id}`" target="_blank">
               编辑
             </a-button>
@@ -164,25 +176,17 @@ const doSearch = () => {
 
 // 删除数据
 const doDelete = async (id: string) => {
-  console.log("delete", id);
   if (!id) {
-    return;
+    return
   }
-  // 使用 window.confirm 创建确认弹窗
-  const isConfirmed = window.confirm('确认删除个人空间吗？这将会清除空间内的所有图片');
-  if (isConfirmed) {
-    const res = await deleteSpaceUsingPost({ id });
-    if (res.data.code === 0) {
-      message.success('删除成功');
-      // 刷新数据
-      fetchData();
-    } else {
-      message.error('删除失败');
-    }
+  const res = await deleteSpaceUsingPost({ id })
+  if (res.data.code === 0) {
+    message.success('删除成功')
+    // 刷新数据
+    fetchData()
   } else {
-    // 用户点击取消，不进行删除操作
-    message.info('已取消删除操作');
+    message.error('删除失败')
   }
-};
+}
 </script>
 
