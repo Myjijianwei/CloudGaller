@@ -1,3 +1,4 @@
+
 <template>
   <div id="pictureDetailPage">
     <a-row :gutter="[16, 16]">
@@ -46,6 +47,19 @@
             <a-descriptions-item label="大小">
               {{ formatSize(picture.picSize) }}
             </a-descriptions-item>
+            <a-descriptions-item label="主色调">
+              <a-space>
+                {{ picture.picColor ?? '-' }}
+                <div
+                  v-if="picture.picColor"
+                  :style="{
+                    backgroundColor: toHexColor(picture.picColor),
+                    width: '16px',
+                    height: '16px',
+                  }"
+                />
+              </a-space>
+            </a-descriptions-item>
           </a-descriptions>
           <!-- 图片操作 -->
           <a-space wrap>
@@ -67,6 +81,7 @@
     </a-row>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { computed, h, onMounted, ref } from 'vue'
@@ -145,9 +160,23 @@ const doDownload = () => {
 }
 </script>
 
+<script lang="ts">
+// 将 toHexColor 移到 <script setup> 外部
+export function toHexColor(input: string): string {
+  // 去掉 0x 前缀
+  const colorValue = input.startsWith('0x') ? input.slice(2) : input
+
+  // 将剩余部分解析为十六进制数，再转成 6 位十六进制字符串
+  const hexColor = parseInt(colorValue, 16).toString(16).padStart(6, '0')
+
+  // 返回标准 #RRGGBB 格式
+  return `#${hexColor}`
+}
+</script>
+
+
 <style scoped>
 #pictureDetailPage {
   margin-bottom: 16px;
 }
 </style>
-

@@ -53,6 +53,7 @@ import { type MenuProps, message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { userLogoutUsingPost } from '@/api/userController.ts'
+import SearchPicturePage from '@/pages/SearchPicturePage.vue'
 const loginUserStore = useLoginUserStore()
 
 const items = ref<MenuProps['items']>([
@@ -78,7 +79,11 @@ const items = ref<MenuProps['items']>([
     label: '空间管理',
     title: '空间管理',
   },
-
+  // {
+  //   key: '/search_picture',
+  //   label: '图片搜索',
+  //   title: '图片搜索',
+  // },
 ])
 
 const router = useRouter()
