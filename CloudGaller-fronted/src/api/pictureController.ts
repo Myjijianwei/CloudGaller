@@ -77,6 +77,21 @@ export async function getPictureVoByIdUsingGet(
   })
 }
 
+/** getSpaceIdByPicture GET /api/picture/getSpaceId */
+export async function getSpaceIdByPictureUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getSpaceIdByPictureUsingGETParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseLong_>('/api/picture/getSpaceId', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  })
+}
+
 /** listPictureByPage POST /api/picture/list/page */
 export async function listPictureByPageUsingPost(
   body: API.PictureQueryRequest,
@@ -227,7 +242,7 @@ export async function updatePictureUsingPost(
 }
 
 /** uploadPicture POST /api/picture/upload */
-export async function uploadPictureUsingPost1(
+export async function uploadPictureUsingPost(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.uploadPictureUsingPOST1Params,
   body: {},

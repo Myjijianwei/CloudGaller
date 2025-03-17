@@ -43,28 +43,92 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onUnmounted, ref, watchEffect } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue'
+import { getSpaceIdByPictureUsingGet, uploadPictureUsingPost } from '@/api/pictureController.ts'
 import { message } from 'ant-design-vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import PictureEditWebSocket from '@/utils/pictureEditWebSocket.ts'
 import { PICTURE_EDIT_ACTION_ENUM, PICTURE_EDIT_MESSAGE_TYPE_ENUM } from '@/constants/picture.ts'
 import { SPACE_TYPE_ENUM } from '@/constants/space.ts'
-import { uploadPictureUsingPost } from '@/api/fileController.ts'
+import { getSpaceByIdUsingGet } from '@/api/spaceController.ts'
 
 interface Props {
   imageUrl?: string
   picture?: API.PictureVO
   spaceId?: number
   space?: API.SpaceVO
+  spaceType?: string
+
   onSuccess?: (newPicture: API.PictureVO) => void
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
+console.log("picture:" + props.picture?.id);
 
-// 是否为团队空间
+// 使用 ref 来管理 spaceId 和 spaceType 的状态
+const spaceId = ref<number | null>(null);
+const spaceType = ref<string | null>(null);
+
+// 定义错误信息的 ref
+const errorMessage = ref<string | null>(null);
+
+// 获取图片所在空间 ID 的函数
+const fetchSpaceId = async () => {
+  if (props.picture?.id) {
+    try {
+      const res = await getSpaceIdByPictureUsingGet({
+        id: props.picture.id
+      });
+      if (res.data.code === 0 && res.data.data) {
+        spaceId.value = res.data.data;
+        console.log('获取到的空间 ID:', spaceId.value);
+        return spaceId.value;
+      } else {
+        errorMessage.value = `获取图片所在空间 ID 失败: ${res.data.message}`;
+        console.error(errorMessage.value);
+        return null;
+      }
+    } catch (error) {
+      errorMessage.value = `请求出错: ${error.message}`;
+      console.error(errorMessage.value);
+      return null;
+    }
+  }
+  return null;
+};
+
+// 获取空间信息的函数
+const fetchSpace = async () => {
+  if (spaceId.value) {
+    try {
+      const res = await getSpaceByIdUsingGet({
+        id: spaceId.value
+      });
+      if (res.data.code === 0 && res.data.data) {
+        spaceType.value = res.data.data.spaceType;
+        console.log('获取到的空间类型:', spaceType.value);
+        console.log('获取到的空间信息:', res.data.data);
+      } else {
+        errorMessage.value = `获取空间信息失败: ${res.data.message}`;
+        console.error(errorMessage.value);
+      }
+    } catch (error) {
+      errorMessage.value = `请求出错: ${error.message}`;
+      console.error(errorMessage.value);
+    }
+  }
+};
+
+// 在组件挂载时按顺序执行获取空间 ID 和空间信息的操作
+onMounted(async () => {
+  await fetchSpaceId();
+  await fetchSpace();
+});
+
+// 计算属性，判断是否为团队空间
 const isTeamSpace = computed(() => {
-  return props.space?.spaceType === SPACE_TYPE_ENUM.TEAM
-})
+  return spaceType.value === SPACE_TYPE_ENUM.TEAM;
+});
 
 // 获取图片裁切器的引用
 const cropperRef = ref()

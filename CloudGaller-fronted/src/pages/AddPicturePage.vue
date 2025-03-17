@@ -89,8 +89,8 @@ import { computed, h, onMounted, reactive, ref, watchEffect } from 'vue'
 import { message } from 'ant-design-vue'
 import {
   editPictureUsingPost,
-  getPictureVoByIdUsingGet,
-  listPictureTagCategoryUsingGet,
+  getPictureVoByIdUsingGet, getSpaceIdByPictureUsingGet,
+  listPictureTagCategoryUsingGet
 } from '@/api/pictureController.ts'
 import { useRoute, useRouter } from 'vue-router'
 import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
@@ -105,10 +105,36 @@ const route = useRoute()
 const picture = ref<API.PictureVO>()
 const pictureForm = reactive<API.PictureEditRequest>({})
 const uploadType = ref<'file' | 'url'>('file')
+
+const pictureId = computed(() => {
+  return route.query?.id
+})
+console.log("picture", pictureId.value)
+
 // 空间 id
 const spaceId = computed(() => {
-  return route.query?.spaceId
+  return route.query?.spaceId || ''
 })
+
+
+const fetchSpaceId = async () => {
+  if (pictureId.value) {
+    try {
+      const res = await getSpaceIdByPictureUsingGet({
+        id: pictureId.value // 假设 API 接收的参数名是 id
+      });
+      if (res.data.code === 0 && res.data.data) {
+        spaceId.value = res.data.data; // 假设返回的 spaceId 是 number 类型，转换为字符串
+        console.log(res.data.data);
+      } else {
+        console.error('获取图片所在空间 ID 失败:', res.data.message);
+      }
+    } catch (error) {
+      console.error('请求出错:', error);
+    }
+  }
+};
+
 
 /**
  * 图片上传成功
@@ -125,7 +151,7 @@ const onSuccess = (newPicture: API.PictureVO) => {
  */
 const handleSubmit = async (values: any) => {
   console.log(values)
-  const pictureId = picture.value.id
+  const pictureId = picture.value?.id
   if (!pictureId) {
     return
   }
@@ -198,6 +224,7 @@ const getOldPicture = async () => {
 
 onMounted(() => {
   getOldPicture()
+  fetchSpaceId()
 })
 
 // ----- 图片编辑器引用 ------
@@ -205,6 +232,7 @@ const imageCropperRef = ref()
 
 // 编辑图片
 const doEditPicture = async () => {
+  console.log("space的数据："+space)
   imageCropperRef.value?.openModal()
 }
 
@@ -231,16 +259,18 @@ const space = ref<API.SpaceVO>()
 
 // 获取空间信息
 const fetchSpace = async () => {
-  // 获取数据
   if (spaceId.value) {
+    console.log("要查询的空间id为：" + spaceId.value);
+    const idToSend = Number(spaceId.value); // 确保 id 为数字类型
     const res = await getSpaceVoByIdUsingGet({
-      id: spaceId.value,
-    })
+      id: idToSend,
+    });
     if (res.data.code === 0 && res.data.data) {
-      space.value = res.data.data
+      space.value = res.data.data;
     }
+    console.log("查询到的空间信息为：" + res.data.data);
   }
-}
+};
 
 watchEffect(() => {
   fetchSpace()

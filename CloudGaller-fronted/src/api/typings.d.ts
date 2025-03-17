@@ -195,6 +195,13 @@ declare namespace API {
     id?: number
   }
 
+  type doLoginUsingPOSTParams = {
+    /** password */
+    password?: string
+    /** username */
+    username?: string
+  }
+
   type GetOutPaintingTaskResponse = {
     output?: Output1
     requestId?: string
@@ -218,6 +225,11 @@ declare namespace API {
   type getSpaceByIdUsingGETParams = {
     /** id */
     id?: number
+  }
+
+  type getSpaceIdByPictureUsingGETParams = {
+    /** pictureId */
+    pictureId?: string
   }
 
   type getSpaceVOByIdUsingGETParams = {
@@ -430,6 +442,7 @@ declare namespace API {
     id?: number
     introduction?: string
     name?: string
+    permissionList?: string[]
     picColor?: string
     picFormat?: string
     picHeight?: number
@@ -617,6 +630,7 @@ declare namespace API {
     id?: number
     maxCount?: number
     maxSize?: number
+    permissionList?: string[]
     spaceId?: number
     spaceLevel?: number
     spaceName?: string

@@ -13,7 +13,7 @@
           + 创建图片
         </a-button>
         <a-button
-          v-if="canManageSpaceUser && space.spaceType == 1"
+          v-if="canManageSpaceUser"
           type="primary"
           ghost
           :icon="h(TeamOutlined)"
@@ -240,4 +240,3 @@ watch(
   margin-bottom: 16px;
 }
 </style>
-
